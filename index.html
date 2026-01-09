@@ -1,0 +1,711 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AeroX - All-in-One Discord Bot</title>
+    
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700&amp;display=swap" rel="stylesheet">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: linear-gradient(135deg, #000000, #0a0a0a, #1a1a1a);
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            position: relative;
+        }
+        
+        /* Staggered Animation Classes */
+        .stagger {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+        
+        .stagger.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            width: 100%;
+        }
+        
+        /* Discord Icon in Top Left */
+        .discord-link {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            font-size: 24px;
+            color: #fff;
+            transition: all 0.3s ease;
+        }
+        
+        .discord-link:hover {
+            color: #5865F2;
+            transform: scale(1.1);
+        }
+        
+        /* Section Styling */
+        section {
+            padding: 100px 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        
+        .section-title {
+            font-size: 3rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            text-align: center;
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 80px;
+            height: 3px;
+            background-color: #fff;
+        }
+        
+        .section-header {
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        
+        /* Home Section */
+        #home {
+            text-align: center;
+        }
+        
+        .logo {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+        
+        .logo-icon {
+            width: 80px;
+            height: 80px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 36px;
+        }
+        
+        h1 {
+            font-size: 4rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            letter-spacing: 2px;
+        }
+        
+        .tagline {
+            font-size: 1.5rem;
+            font-weight: 300;
+            margin-bottom: 20px; /* Reduced from 40px to 20px */
+            letter-spacing: 1px;
+        }
+        
+        .hero-buttons {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-top: 15px; /* Reduced from 30px to 15px */
+        }
+        
+        .btn {
+            padding: 15px 35px;
+            border-radius: 30px;
+            font-weight: 600;
+            text-decoration: none;
+            transition: all 0.4s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            border: 2px solid #fff;
+            background-color: transparent;
+            color: #fff;
+            position: relative;
+            overflow: hidden;
+            z-index: 1;
+        }
+        
+        .btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 0;
+            height: 100%;
+            background-color: #fff;
+            transition: width 0.4s ease;
+            z-index: -1;
+        }
+        
+        .btn:hover::before {
+            width: 100%;
+        }
+        
+        .btn:hover {
+            color: #000;
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Features Grid */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .feature-card {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 10px;
+            padding: 30px;
+            transition: all 0.4s ease;
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: #fff;
+            background-color: rgba(255, 255, 255, 0.08);
+            box-shadow: 0 15px 30px rgba(255, 255, 255, 0.1);
+        }
+        
+        .feature-icon {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+            transition: all 0.3s ease;
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1);
+        }
+        
+        .feature-title {
+            font-size: 1.5rem;
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+        
+        .feature-description {
+            color: rgba(255, 255, 255, 0.7);
+            line-height: 1.6;
+        }
+        
+        /* Commands Section */
+        .commands-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+            margin-top: 40px;
+        }
+        
+        .command-card {
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 8px;
+            padding: 20px;
+            transition: all 0.4s ease;
+            background-color: rgba(255, 255, 255, 0.03);
+        }
+        
+        .command-card:hover {
+            border-color: #fff;
+            background-color: rgba(255, 255, 255, 0.08);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 20px rgba(255, 255, 255, 0.1);
+        }
+        
+        .command-name {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: #fff;
+        }
+        
+        .command-description {
+            color: rgba(255, 255, 255, 0.7);
+            margin-bottom: 10px;
+        }
+        
+        .command-usage {
+            font-family: monospace;
+            background-color: rgba(255, 255, 255, 0.1);
+            padding: 5px 10px;
+            border-radius: 4px;
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.9);
+        }
+        
+        /* Support Section */
+        .support-content {
+            max-width: 800px;
+            margin: 0 auto;
+            text-align: center;
+        }
+        
+        .support-links {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .support-link {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-decoration: none;
+            color: #fff;
+            transition: all 0.4s ease;
+        }
+        
+        .support-link:hover {
+            transform: translateY(-10px);
+        }
+        
+        .support-icon {
+            font-size: 3rem;
+            margin-bottom: 15px;
+            width: 80px;
+            height: 80px;
+            border: 2px solid #fff;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.4s ease;
+        }
+        
+        .support-link:hover .support-icon {
+            background-color: #fff;
+            color: #000;
+            transform: scale(1.1);
+        }
+        
+        .support-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 5px;
+        }
+        
+        .support-description {
+            color: rgba(255, 255, 255, 0.7);
+            font-size: 0.9rem;
+        }
+        
+        /* Floating Navigation Bar - Enhanced Glass Effect */
+        .floating-nav {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            background-color: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border-radius: 50px;
+            padding: 15px 30px;
+            display: flex;
+            gap: 40px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .floating-nav:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 12px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: #fff;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            padding: 10px 15px;
+            border-radius: 15px;
+            position: relative;
+        }
+        
+        .nav-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 15px;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.1), rgba(255, 255, 255, 0.05));
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: -1;
+        }
+        
+        .nav-item:hover::before {
+            opacity: 1;
+        }
+        
+        .nav-item:hover {
+            color: #fff;
+        }
+        
+        .nav-item.active {
+            color: #fff;
+        }
+        
+        .nav-item.active::before {
+            opacity: 1;
+            background: linear-gradient(45deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.1));
+        }
+        
+        .nav-icon {
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+            transition: all 0.3s ease;
+        }
+        
+        .nav-item:hover .nav-icon {
+            transform: translateY(-2px);
+        }
+        
+        .nav-text {
+            font-size: 0.8rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Footer */
+        footer {
+            margin-top: auto;
+            padding: 30px 0;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.7);
+            background-color: rgba(0, 0, 0, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        
+        /* Responsive adjustments */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 3rem;
+            }
+            
+            .tagline {
+                font-size: 1.2rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .floating-nav {
+                gap: 20px;
+                padding: 10px 20px;
+            }
+            
+            .nav-text {
+                font-size: 0.7rem;
+            }
+            
+            .support-links {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+        }
+    </style>
+<link rel="me" href="https://www.blogger.com/profile/14958403641212606859">
+<meta name="google-adsense-platform-account" content="ca-host-pub-1556223355139109">
+<meta name="google-adsense-platform-domain" content="blogspot.com">
+</head>
+<body>
+    <!-- Discord Icon in Top Left -->
+    <a href="https://discord.gg/kYKv3YFCmq" target="_blank" class="discord-link">
+        <i class="fab fa-discord"></i>
+    </a>
+    
+    <div class="container">
+        <!-- Home Section -->
+        <section id="home">
+            <div class="logo stagger active" data-delay="0">
+                <div class="logo-icon">
+                    <i class="fas fa-robot"></i>
+                </div>
+            </div>
+            <h1 class="stagger active" data-delay="100">AeroX</h1>
+            <p class="tagline stagger active" data-delay="200">Discord landing Page</p>
+            <div class="hero-buttons stagger active" data-delay="300">
+                <a href="#" class="btn" id="add-to-discord-btn">
+                    <i class="fas fa-plus"></i> Add to Discord
+                </a>
+                <a href="#commands" class="btn" id="view-commands-btn">
+                    <i class="fas fa-terminal"></i> View Commands
+                </a>
+            </div>
+            
+            <div class="section-header stagger active" data-delay="400">
+                <h2 class="section-title">Powerful Features</h2>
+                <p>AeroX comes packed with everything you need to manage your Discord server</p>
+            </div>
+            
+            <div class="features-grid">
+                <div class="feature-card stagger active" data-delay="500">
+                    <div class="feature-icon">
+                        <i class="fas fa-shield-alt"></i>
+                    </div>
+                    <h3 class="feature-title">Moderation</h3>
+                    <p class="feature-description">Advanced moderation tools to keep your server safe and organized with automated actions and custom moderation settings.</p>
+                </div>
+                
+                <div class="feature-card stagger active" data-delay="600">
+                    <div class="feature-icon">
+                        <i class="fas fa-music"></i>
+                    </div>
+                    <h3 class="feature-title">Music</h3>
+                    <p class="feature-description">High-quality music playback from multiple sources with playlists, volume control, and 24/7 streaming capabilities.</p>
+                </div>
+                
+                <div class="feature-card stagger active" data-delay="700">
+                    <div class="feature-icon">
+                        <i class="fas fa-gamepad"></i>
+                    </div>
+                    <h3 class="feature-title">Fun &amp; Games</h3>
+                    <p class="feature-description">Engage your community with a wide variety of games, trivia, memes, and interactive commands.</p>
+                </div>
+                
+                <div class="feature-card stagger active" data-delay="800">
+                    <div class="feature-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <h3 class="feature-title">Customization</h3>
+                    <p class="feature-description">Fully customizable with welcome messages, auto-roles, reaction roles, and server-specific settings.</p>
+                </div>
+                
+                <div class="feature-card stagger active" data-delay="900">
+                    <div class="feature-icon">
+                        <i class="fas fa-chart-line"></i>
+                    </div>
+                    <h3 class="feature-title">Utilities</h3>
+                    <p class="feature-description">Essential tools like polls, reminders, translations, weather, and more to enhance your server experience.</p>
+                </div>
+                
+                <div class="feature-card stagger active" data-delay="1000">
+                    <div class="feature-icon">
+                        <i class="fas fa-globe"></i>
+                    </div>
+                    <h3 class="feature-title">Integration</h3>
+                    <p class="feature-description">Connect with other platforms like Twitch, YouTube, Twitter, and Reddit for seamless content sharing.</p>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Commands Section -->
+        <section id="commands">
+            <div class="section-header stagger active" data-delay="1100">
+                <h2 class="section-title">Commands</h2>
+                <p>Explore all the commands AeroX has to offer</p>
+            </div>
+            
+            <div class="commands-grid">
+                <div class="command-card stagger active" data-delay="1200">
+                    <h3 class="command-name">/help</h3>
+                    <p class="command-description">Displays all available commands and their descriptions.</p>
+                    <div class="command-usage">/help [command]</div>
+                </div>
+                
+                <div class="command-card stagger active" data-delay="1300">
+                    <h3 class="command-name">/play</h3>
+                    <p class="command-description">Plays music from YouTube, Spotify, or other sources in your voice channel.</p>
+                    <div class="command-usage">/play [song name/URL]</div>
+                </div>
+                
+                <div class="command-card stagger active" data-delay="1400">
+                    <h3 class="command-name">/ban</h3>
+                    <p class="command-description">Bans a user from the server with an optional reason.</p>
+                    <div class="command-usage">/ban [@user] [reason]</div>
+                </div>
+                
+                <div class="command-card stagger active" data-delay="1500">
+                    <h3 class="command-name">/kick</h3>
+                    <p class="command-description">Kicks a user from the server with an optional reason.</p>
+                    <div class="command-usage">/kick [@user] [reason]</div>
+                </div>
+                
+                <div class="command-card stagger active" data-delay="1600">
+                    <h3 class="command-name">/clear</h3>
+                    <p class="command-description">Deletes a specified number of messages from the channel.</p>
+                    <div class="command-usage">/clear [amount]</div>
+                </div>
+                
+                <div class="command-card stagger active" data-delay="1700">
+                    <h3 class="command-name">/poll</h3>
+                    <p class="command-description">Creates a poll with multiple options for users to vote on.</p>
+                    <div class="command-usage">/poll [question] [options]</div>
+                </div>
+                
+                <div class="command-card stagger active" data-delay="1800">
+                    <h3 class="command-name">/userinfo</h3>
+                    <p class="command-description">Displays information about a specified user.</p>
+                    <div class="command-usage">/userinfo [@user]</div>
+                </div>
+                
+                <div class="command-card stagger active" data-delay="1900">
+                    <h3 class="command-name">/serverinfo</h3>
+                    <p class="command-description">Displays information about the current server.</p>
+                    <div class="command-usage">/serverinfo</div>
+                </div>
+                
+                <div class="command-card stagger active" data-delay="2000">
+                    <h3 class="command-name">/translate</h3>
+                    <p class="command-description">Translates text from one language to another.</p>
+                    <div class="command-usage">/translate [text] [target language]</div>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Support Section -->
+        <section id="support">
+            <div class="section-header stagger active" data-delay="2100">
+                <h2 class="section-title">Support</h2>
+                <p>Need help? We're here for you</p>
+            </div>
+            
+            <div class="support-content stagger active" data-delay="2200">
+                <p>If you're experiencing any issues with AeroX or have questions about its features, our support team is ready to assist you. Join our Discord server or check out our YouTube channel for tutorials and updates.</p>
+                
+                <div class="support-links">
+                    <a href="https://discord.gg/kYKv3YFCmq" target="_blank" class="support-link stagger active" data-delay="2300">
+                        <div class="support-icon">
+                            <i class="fab fa-discord"></i>
+                        </div>
+                        <h3 class="support-title">Discord Server</h3>
+                        <p class="support-description">Join our community for support and updates</p>
+                    </a>
+                    
+                    <a href="https://www.youtube.com/@AeroX-Devs" target="_blank" class="support-link stagger active" data-delay="2400">
+                        <div class="support-icon">
+                            <i class="fab fa-youtube"></i>
+                        </div>
+                        <h3 class="support-title">YouTube Channel</h3>
+                        <p class="support-description">Tutorials, features, and bot updates</p>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </div>
+    
+    <footer>
+        <div class="container">
+            <p>Made with love by AeroX team</p>
+        </div>
+    </footer>
+    
+    <!-- Floating Navigation Bar -->
+    <nav class="floating-nav">
+        <a href="#home" class="nav-item active">
+            <i class="fas fa-home nav-icon"></i>
+            <span class="nav-text">Home</span>
+        </a>
+        <a href="#commands" class="nav-item">
+            <i class="fas fa-terminal nav-icon"></i>
+            <span class="nav-text">Commands</span>
+        </a>
+        <a href="#support" class="nav-item">
+            <i class="fas fa-life-ring nav-icon"></i>
+            <span class="nav-text">Support</span>
+        </a>
+    </nav>
+    
+    <script>
+        // Staggered Animation Function
+        function animateStaggeredElements() {
+            const staggeredElements = document.querySelectorAll('.stagger');
+            
+            staggeredElements.forEach(element => {
+                const delay = element.getAttribute('data-delay');
+                setTimeout(() => {
+                    element.classList.add('active');
+                }, delay);
+            });
+        }
+        
+        // Navigation functionality
+        function navigateToSection(sectionId) {
+            // Remove active class from all nav items
+            document.querySelectorAll('.nav-item').forEach(navItem => {
+                navItem.classList.remove('active');
+            });
+            
+            // Add active class to the nav item that matches the section
+            document.querySelectorAll('.nav-item').forEach(navItem => {
+                if (navItem.getAttribute('href') === `#${sectionId}`) {
+                    navItem.classList.add('active');
+                }
+            });
+            
+            // Scroll to the section
+            const targetSection = document.getElementById(sectionId);
+            targetSection.scrollIntoView({ behavior: 'smooth' });
+        }
+        
+        // Add event listeners to navigation items
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function(e) {
+                e.preventDefault();
+                const targetId = this.getAttribute('href').substring(1);
+                navigateToSection(targetId);
+            });
+        });
+        
+        // Add event listener to "View Commands" button
+        document.getElementById('view-commands-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            navigateToSection('commands');
+        });
+        
+        // Add event listener to "Add to Discord" button
+        document.getElementById('add-to-discord-btn').addEventListener('click', function(e) {
+            e.preventDefault();
+            // In a real implementation, this would lead to the Discord OAuth2 URL
+            alert('This would lead to the Discord bot authorization page');
+        });
+        
+        // Initialize staggered animations on page load
+        window.addEventListener('load', () => {
+            animateStaggeredElements();
+        });
+    </script>
+
+</body></html>
